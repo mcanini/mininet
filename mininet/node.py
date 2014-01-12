@@ -58,6 +58,8 @@ from mininet.util import ( quietRun, errRun, errFail, moveIntf, isShellBuiltin,
 from mininet.moduledeps import moduleDeps, pathCheck, OVS_KMOD, OF_KMOD, TUN
 from mininet.link import Link, Intf, TCIntf
 
+from vlanintf import VLANIntf
+
 class Node( object ):
     """A virtual network node is simply a shell in a network namespace.
        We communicate with it using pipes."""
@@ -990,6 +992,8 @@ class OVSSwitch( Switch ):
         "Connect a data port"
         self.cmd( 'ovs-vsctl add-port', self, intf )
         self.cmd( 'ifconfig', intf, 'up' )
+        if type( intf ) == VLANIntf:
+            intf.set_vlan()
         self.TCReapply( intf )
 
     def detach( self, intf ):
