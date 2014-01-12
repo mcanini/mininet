@@ -64,8 +64,8 @@ def errRun( *cmd, **kwargs ):
     # Allow passing in a list or a string
     if len( cmd ) == 1:
         cmd = cmd[ 0 ]
-        if isinstance( cmd, str ):
-            cmd = cmd.split( ' ' )
+    if not isinstance( cmd, list ):
+        cmd = cmd.split( ' ' )
     cmd = [ str( arg ) for arg in cmd ]
     # By default we separate stderr, don't run in a shell, and don't echo
     stderr = kwargs.get( 'stderr', PIPE )
