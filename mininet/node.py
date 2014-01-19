@@ -947,7 +947,7 @@ class OVSLegacyKernelSwitch( Switch ):
 class OVSSwitch( Switch ):
     "Open vSwitch switch. Depends on ovs-vsctl."
 
-    def __init__( self, name, failMode='secure', datapath='kernel', **params ):
+    def __init__( self, name, failMode='secure', datapath='kernel', of13=False, **params ):
         """Init.
            name: name for switch
            failMode: controller loss behavior (secure|open)
@@ -955,6 +955,7 @@ class OVSSwitch( Switch ):
         Switch.__init__( self, name, **params )
         self.failMode = failMode
         self.datapath = datapath
+        self.of13 = of13
 
     @classmethod
     def setup( cls ):
@@ -1030,7 +1031,8 @@ class OVSSwitch( Switch ):
         self.cmd( 'ovs-vsctl add-br', self )
         if self.datapath == 'user':
             self.cmd( 'ovs-vsctl set bridge', self,'datapath_type=netdev' )
-        self.cmd( 'ovs-vsctl set bridge', self, 'protocols=OpenFlow13' )
+        if self.of13:
+            self.cmd( 'ovs-vsctl set bridge', self, 'protocols=OpenFlow13' )
         int( self.dpid, 16 ) # DPID must be a hex string
         self.cmd( 'ovs-vsctl -- set Bridge', self,
                   'other_config:datapath-id=' + self.dpid )
